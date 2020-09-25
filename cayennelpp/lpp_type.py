@@ -616,6 +616,35 @@ def lpp_power_to_bytes(data):
         raise ValueError("Power sensor values must be positive!")
     return __to_bytes(val_i, 2)
 
+def lpp_depth_from_bytes(buf):
+    """
+    Decode depth from CyaenneLPP byte buffer,
+    and return the value as a tuple.
+    """
+    logging.debug("lpp_depth_from_bytes")
+    val_i = __from_bytes(buf, 2)
+    
+    check_sign(val_i, 2)
+    val = val_i / 1000.0
+
+    logging.debug("  out:   value = %f", val)
+    return (val,)
+
+def lpp_depth_to_bytes(data):
+    """
+    Encode depth into CayenneLPP,
+    and return as a byte buffer
+    """
+    logging.debug("lpp_depth_to_bytes")
+    data = __assert_data_tuple(data, 1)
+    val = data[0]
+    if val < 0:
+        logging.error("Negative depth value is not allowed")
+        raise ValueError("Negative values are not allowed")
+    logging.debug("  in:    value = %f", val)
+    val_i = int(val * 1000)
+    return __to_bytes(val_i, 2)
+
 class LppType(object):
     """Cayenne LPP type representation
 
@@ -673,6 +702,8 @@ LPP_TYPES = [
             lpp_voltage_from_bytes, lpp_voltage_to_bytes),
     LppType(117, 'Current', 2, 1,
             lpp_current_from_bytes, lpp_current_to_bytes),
+    LppType(119, 'Depth', 2, 1,
+            lpp_depth_from_bytes, lpp_depth_to_bytes),           
     LppType(122, 'Load', 3, 1,
             lpp_load_from_bytes, lpp_load_to_bytes),
     LppType(128, 'Power', 2, 1,
