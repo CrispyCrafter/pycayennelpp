@@ -178,3 +178,8 @@ class LppFrame(object):
         """Create and add a load LppData"""
         power = LppData(channel, 128, (value, ))
         self.data.append(power)
+
+    def add_depth(self, channel, value):
+        """Create and add a load LppData"""
+        depth = LppData(channel, 119, (value, ))
+        self.data.append(depth)    

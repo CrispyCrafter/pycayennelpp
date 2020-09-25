@@ -139,6 +139,15 @@ def test_add_humidity(frame):
     assert frame.data[1].type == 104
     assert frame.data[2].type == 104
 
+def test_add_depth(frame):
+    frame.add_depth(2, 0.125)
+    frame.add_depth(3, 0.56)
+    frame.add_depth(4, 0.725)
+    assert len(frame) == 3
+    assert frame.data[0].type == 119
+    assert frame.data[1].type == 119
+    assert frame.data[2].type == 119
+
 
 def test_print_empty_frame(frame):
     print(frame)
