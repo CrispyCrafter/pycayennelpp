@@ -645,6 +645,36 @@ def lpp_depth_to_bytes(data):
     val_i = int(val * 1000)
     return __to_bytes(val_i, 2)
 
+def lpp_rate_from_bytes(buf):
+    """
+    Decode rate from CyaenneLPP byte buffer,
+    and return the value as a tuple.
+    """
+    logging.debug("lpp_rate_from_bytes")
+    val_i = __from_bytes(buf, 2)
+    
+    check_sign(val_i, 2)
+    val = val_i / 100.0
+
+    logging.debug("  out:   value = %f", val)
+    return (val,)
+
+def lpp_rate_to_bytes(data):
+    """
+    Encode rate into CayenneLPP,
+    and return as a byte buffer
+    """
+    logging.debug("lpp_rate_to_bytes")
+    data = __assert_data_tuple(data, 1)
+    val = data[0]
+    if val < 0:
+        logging.error("Negative rate value is not allowed")
+        raise ValueError("Negative values are not allowed")
+    logging.debug("  in:    value = %f", val)
+    val_i = int(val * 100)
+    return __to_bytes(val_i, 2)
+
+
 class LppType(object):
     """Cayenne LPP type representation
 
@@ -715,7 +745,9 @@ LPP_TYPES = [
     LppType(134, 'Gyrometer', 6, 3,
             lpp_gyro_from_bytes, lpp_gyro_to_bytes),
     LppType(136, 'GPS Location', 9, 3,
-            lpp_gps_from_bytes, lpp_gps_to_bytes)
+            lpp_gps_from_bytes, lpp_gps_to_bytes),
+    LppType(246, 'Rate', 2, 1,
+            lpp_rate_from_bytes, lpp_rate_to_bytes)            
 ]
 
 

@@ -148,6 +148,14 @@ def test_add_depth(frame):
     assert frame.data[1].type == 119
     assert frame.data[2].type == 119
 
+def test_add_rate(frame):
+    frame.add_rate(2, 0.125)
+    frame.add_rate(3, 0.56)
+    frame.add_rate(4, 0.725)
+    assert len(frame) == 3
+    assert frame.data[0].type == 246
+    assert frame.data[1].type == 246
+    assert frame.data[2].type == 246
 
 def test_print_empty_frame(frame):
     print(frame)
