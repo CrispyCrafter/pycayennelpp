@@ -25,13 +25,17 @@ The following table lists the currently supported data types with the LPP code
 | Barometer      | 115 |    2 |   1 |
 | Voltage        | 116 |    2 |   1 |
 | Current**      | 117 |    2 |   1 | 
-| Depth**        | 119 |    2 |   1 | 
+| Depth**        | 119 |    2 |   1 |
+| Percentage**   | 120 |    1 |   1 |
+| Altitude**     | 121 |    2 |   1 | 
 | Load**         | 122 |    3 |   1 |
 | Power**        | 128 |    2 |   1 | 
+| Energy**       | 131 |    4 |   1 | 
 | Direction**    | 132 |    2 |   1 | 
 | Unix Time      | 133 |    4 |   1 |
 | Gyrometer      | 134 |    6 |   3 |
 | GPS Location   | 136 |    9 |   3 |
+| Switch**       | 142 |    1 |   1 |
 | Rate**         | 246 |    2 |   1 |  
 
 ** These objects are not officially supported by CayenneLPP, but uses the IPSO code scheme described above.
