@@ -188,3 +188,23 @@ class LppFrame(object):
         """Create and add a rate LppData"""
         rate = LppData(channel, 246, (value, ))
         self.data.append(rate)  
+
+    def add_percentage(self, channel, value):
+        """Create and add a percentage LppData"""
+        percentage = LppData(channel, 120, (value, ))
+        self.data.append(percentage)  
+
+    def add_altitude(self, channel, value):
+        """Create and add a altitude LppData"""
+        altitude = LppData(channel, 121, (value, ))
+        self.data.append(altitude)  
+
+    def add_energy(self, channel, value):
+        """Create and add a energy LppData"""
+        energy = LppData(channel, 131, (value, ))
+        self.data.append(energy)  
+
+    def add_switch(self, channel, value):
+        """Create and add a switch LppData"""
+        switch = LppData(channel, 142, (value, ))
+        self.data.append(switch)  

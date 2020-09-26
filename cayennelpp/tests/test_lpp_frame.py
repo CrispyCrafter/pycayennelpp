@@ -157,6 +157,43 @@ def test_add_rate(frame):
     assert frame.data[1].type == 246
     assert frame.data[2].type == 246
 
+def test_add_percentage(frame):
+    frame.add_percentage(2,0)
+    frame.add_percentage(3,50)
+    frame.add_percentage(4,100)
+
+    assert len(frame) == 3
+    assert frame.data[0].type == 120
+    assert frame.data[1].type == 120
+    assert frame.data[2].type == 120
+
+def test_add_altitude(frame):
+    frame.add_altitude(2, -1)
+    frame.add_altitude(3, 0)
+    frame.add_altitude(4, 1)
+    assert len(frame) == 3
+    assert frame.data[0].type == 121
+    assert frame.data[1].type == 121
+    assert frame.data[2].type == 121    
+
+def test_add_energy(frame):
+    frame.add_energy(2, 1234.567)
+    frame.add_energy(3, 123.456)
+    frame.add_energy(4, 12.345)
+    assert len(frame) == 3
+    assert frame.data[0].type == 131
+    assert frame.data[1].type == 131
+    assert frame.data[2].type == 131
+
+def test_add_switch(frame):
+    frame.add_switch(2, 0)
+    frame.add_switch(3, 0)
+    frame.add_switch(4, 1)
+    assert len(frame) == 3
+    assert frame.data[0].type == 142
+    assert frame.data[1].type == 142
+    assert frame.data[2].type == 142    
+
 def test_print_empty_frame(frame):
     print(frame)
 

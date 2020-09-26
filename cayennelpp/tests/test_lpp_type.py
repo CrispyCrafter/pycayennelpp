@@ -16,9 +16,12 @@ from cayennelpp.lpp_type import *
         (lpp_voltage_to_bytes,      (-1,)),         # type 116
         (lpp_current_to_bytes,      (-1,)),         # type 117
         (lpp_depth_to_bytes,        (-1,)),         # type 119
+        (lpp_percentage_to_bytes,   (-1,)),         # type 120
         (lpp_power_to_bytes,        (-1,)),         # type 128
         (lpp_direction_to_bytes,    (-1,)),         # type 132
+        (lpp_energy_to_bytes,       (-12345,)),     # type 131
         (lpp_unix_time_to_bytes,    (-1,)),         # type 133
+        (lpp_switch_to_bytes,       (-1,)),         # type 142
         (lpp_rate_to_bytes,         (-1,)),         # type 246
     ]
 )
@@ -38,10 +41,13 @@ def test_should_raise_Exception_on_negative_to_bytes(converter, test_value):
     (lpp_voltage_from_bytes,    (0xff, 0x9c,)),            # val -100      type 116
     (lpp_current_from_bytes,    (0xff, 0xff,)),            # val -1        type 117
     (lpp_depth_from_bytes,      (0xff, 0xff,)),            # val -1        type 119
+    (lpp_percentage_from_bytes, (0xff,)),                  # val -1        type 120
     (lpp_power_from_bytes,      (0xff, 0xff,)),            # val -1        type 128
     (lpp_direction_from_bytes,  (0xfe, 0x93,)),            # val -365      type 132
+    (lpp_energy_from_bytes,     (0xf8, 0x7b, 0x32, 0x0,)), # val -126144000  type 131
     (lpp_unix_time_from_bytes,  (0xf8, 0x7b, 0x32, 0x0,)), # val -126144000  type 133
-    (lpp_rate_from_bytes,       (0xfb, 0xf0)),             # val -10.1      type 246
+    (lpp_switch_from_bytes,     (0xff,)),                  # val -1        type 142
+    (lpp_rate_from_bytes,       (0xfb, 0xf0)),             # val -10.1     type 246
     ]
 )
 def test_should_raise_ValueError_on_negative_from_bytes(converter, test_value):
@@ -64,12 +70,16 @@ def test_should_raise_ValueError_on_negative_from_bytes(converter, test_value):
     (lpp_voltage_to_bytes,      (0, 1)),    # type 116
     (lpp_current_to_bytes,      (0, 1)),    # type 117
     (lpp_depth_to_bytes,        (0, 1)),    # type 119
+    (lpp_percentage_to_bytes,   (0, 1)),    # type 120
+    (lpp_altitude_to_bytes,     (0, 1)),    # type 121
     (lpp_load_to_bytes,         (0, 1)),    # type 122
     (lpp_power_to_bytes,        (0, 1)),    # type 128
+    (lpp_energy_to_bytes,       (0, 1)),    # type 131
     (lpp_direction_to_bytes,    (0, 1)),    # type 132
     (lpp_unix_time_to_bytes,    (0, 1)),    # type 133
     (lpp_gyro_to_bytes,         (0, 1)),    # type 134
     (lpp_gps_to_bytes,          (0, 1)),    # type 136
+    (lpp_switch_to_bytes,       (0, 1)),    # type 142
     (lpp_rate_to_bytes,         (0, 1)),    # type 246
     ]
 )
@@ -91,12 +101,16 @@ def test_should_raise_AssertionError_on_invalid_val(converter, test_value):
     (lpp_voltage_from_bytes,     [0x00]),               # type 116
     (lpp_current_from_bytes,     [0x00]),               # type 117
     (lpp_depth_from_bytes,       [0x00]),               # type 119
+    (lpp_percentage_from_bytes,  [0x00, 0x00]),         # type 120
+    (lpp_altitude_from_bytes,    [0x00]),               # type 121
     (lpp_load_from_bytes,        [0x00]),               # type 122
     (lpp_power_from_bytes,       [0x00]),               # type 128
+    (lpp_energy_from_bytes,      [0x00, 0x00, 0x00]),   # type 131
     (lpp_direction_from_bytes,   [0x00]),               # type 132
     (lpp_unix_time_from_bytes,   [0x00]),               # type 133
     (lpp_gyro_from_bytes,        [0x00]),               # type 134
     (lpp_gps_from_bytes,         [0x00]),               # type 136
+    (lpp_switch_from_bytes,      [0x00, 0x00]),         # type 142
     (lpp_rate_from_bytes,        [0x00]),               # type 246
     ]
 )
@@ -119,12 +133,16 @@ def test_should_raise_AssertionError_on_invalid_buf(converter, test_value):
     (lpp_voltage_to_bytes,        [0x00]),             # type 116
     (lpp_current_to_bytes,        [0x00]),             # type 117
     (lpp_depth_to_bytes,          [0x00]),             # type 119
+    (lpp_percentage_to_bytes,     [0x00, 0x00]),       # type 120
+    (lpp_altitude_to_bytes,       [0x00]),             # type 121
     (lpp_load_to_bytes,           [0x00]),             # type 122
     (lpp_power_to_bytes,          [0x00]),             # type 128
+    (lpp_energy_to_bytes,         [0x00, 0x00, 0x00]), # type 131
     (lpp_direction_to_bytes,      [0x00]),             # type 132
     (lpp_unix_time_to_bytes,      [0x00]),             # type 133
     (lpp_gyro_to_bytes,           [0x00]),             # type 134
     (lpp_gps_to_bytes,            [0x00]),             # type 136
+    (lpp_switch_to_bytes,         [0x00, 0x00]),       # type 142
     (lpp_rate_to_bytes,           [0x00]),             # type 246
     ]
 )
@@ -146,12 +164,16 @@ def test_should_raise_Exception_on_invalid_val_type(converter, test_value):
     ("lpp_voltage",     [(2,)]),                                                        # type 116
     ("lpp_current",     [(2,), (1,), (10,)]),                                           # type 117
     ("lpp_depth",       [(0.2,), (0.5,), (0.75,), (10,)]),                              # type 119
+    ("lpp_percentage",  [(0,), (25,), (50,), (75,) , (100,)]),                          # type 120
+    ("lpp_altitude",    [(-10,), (-5,), (5,), (10,)]),                                  # type 121
     ("lpp_load",        [(-5.432,), (160.987,)]),                                       # type 122
     ("lpp_power",       [(1,), (10,), (15,)]),                                          # type 128
+    ("lpp_energy",      [(10,), (12345,), (123456,)]),                                  # type 131
     ("lpp_direction",   [(10,), (90,), (270,)]),                                        # type 132
     ("lpp_unix_time",   [(int(datetime.now(timezone.utc).timestamp()),), (5,)]),        # type 133
     ("lpp_gyro",        [(123.45, -123.45, 0.0), (-123.45, 0.0, -123.45)]),             # type 134
     ("lpp_gps",         [(42.3519, -87.9094, 10.00), (-42.3519, 87.9094, -10.00)]),     # type 136
+    ("lpp_switch",      [(0,), (1,)]),                                                  # type 136
     ("lpp_rate",        [(42.35,), (10.41,), (5.15,)]),                                 # type 246
     ]
 )

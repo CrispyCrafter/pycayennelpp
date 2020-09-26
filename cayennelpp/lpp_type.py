@@ -643,6 +643,7 @@ def lpp_depth_to_bytes(data):
         raise ValueError("Negative values are not allowed")
     logging.debug("  in:    value = %f", val)
     val_i = int(val * 1000)
+
     return __to_bytes(val_i, 2)
 
 def lpp_rate_from_bytes(buf):
@@ -674,6 +675,114 @@ def lpp_rate_to_bytes(data):
     val_i = int(val * 100)
     return __to_bytes(val_i, 2)
 
+def lpp_percentage_from_bytes(buf):
+    """
+    Decode percentage from CyaenneLPP byte buffer,
+    and return the value as a tuple.
+    """
+    logging.debug("lpp_percentage_from_bytes")
+    val = __from_bytes(buf, 1)
+    
+    check_sign(val, 1)
+
+    logging.debug("  out:   value = %f", val)
+    return (val,)
+
+def lpp_percentage_to_bytes(data):
+    """
+    Encode percentage into CayenneLPP,
+    and return as a byte buffer
+    """
+    logging.debug("lpp_percentage_to_bytes")
+    data = __assert_data_tuple(data, 1)
+    val = data[0]
+    if val < 0:
+        logging.error("Negative rate value is not allowed")
+        raise ValueError("Negative values are not allowed")
+    logging.debug("  in:    value = %f", val)
+
+    return __to_bytes(val, 1)
+
+
+def lpp_altitude_from_bytes(buf):
+    """
+    Decode altitude sensor data from CyaenneLPP byte buffer,
+    and return the value as a tupel.
+    """
+    logging.debug("lpp_altitude_from_bytes")
+    val = __from_bytes(buf, 2)
+    val = __to_s16(val)
+    logging.debug("  out:   value = %f", val)
+    return (val, )
+
+def lpp_altitude_to_bytes(data):
+    """
+    Encode altitude sensor data into CayenneLPP,
+    and return as a byte buffer
+    """
+    logging.debug("lpp_altitude_to_bytes")
+    data = __assert_data_tuple(data, 1)
+    val = data[0]
+    logging.debug("  in:    value = %f", val)
+    val_i = __to_unsigned(val)
+    return __to_bytes(val, 2)
+
+def lpp_energy_from_bytes(buf):
+    """
+    Decode energy from CyaenneLPP byte buffer,
+    and return the value as a tuple.
+    """
+    logging.debug("lpp_energy_from_bytes")
+    val_i = __from_bytes(buf, 4)
+    
+    check_sign(val_i, 4)
+    val = val_i / 1000.0
+
+    logging.debug("  out:   value = %f", val)
+    return (val,)
+
+def lpp_energy_to_bytes(data):
+    """
+    Encode energy into CayenneLPP,
+    and return as a byte buffer
+    """
+    logging.debug("lpp_energy_to_bytes")
+    data = __assert_data_tuple(data, 1)
+    val = data[0]
+    if val < 0:
+        logging.error("Negative energy value is not allowed")
+        raise ValueError("Negative values are not allowed")
+    logging.debug("  in:    value = %f", val)
+    val_i = int(val * 1000)
+    return __to_bytes(val_i, 4)
+
+def lpp_switch_from_bytes(buf):
+    """
+    Decode switch from CyaenneLPP byte buffer,
+    and return the value as a tuple.
+    """
+    logging.debug("lpp_switch_from_bytes")
+    val = __from_bytes(buf, 1)
+    
+    check_sign(val, 1)
+
+    logging.debug("  out:   value = %f", val)
+    return (val,)
+
+def lpp_switch_to_bytes(data):
+    """
+    Encode switch into CayenneLPP,
+    and return as a byte buffer
+    """
+    logging.debug("lpp_switch_to_bytes")
+    data = __assert_data_tuple(data, 1)
+    val = data[0]
+    if val < 0:
+        logging.error("Negative switch value is not allowed")
+        raise ValueError("Negative values are not allowed")
+    logging.debug("  in:    value = %f", val)
+
+    return __to_bytes(val, 1)
 
 class LppType(object):
     """Cayenne LPP type representation
@@ -733,11 +842,17 @@ LPP_TYPES = [
     LppType(117, 'Current', 2, 1,
             lpp_current_from_bytes, lpp_current_to_bytes),
     LppType(119, 'Depth', 2, 1,
-            lpp_depth_from_bytes, lpp_depth_to_bytes),           
+            lpp_depth_from_bytes, lpp_depth_to_bytes),
+    LppType(120, 'Percentage', 1, 1,
+            lpp_percentage_from_bytes, lpp_percentage_to_bytes),
+    LppType(121, 'Altitude', 2, 1,
+            lpp_altitude_from_bytes, lpp_altitude_to_bytes),
     LppType(122, 'Load', 3, 1,
             lpp_load_from_bytes, lpp_load_to_bytes),
     LppType(128, 'Power', 2, 1,
             lpp_power_from_bytes, lpp_power_to_bytes),
+    LppType(131, 'Energy', 4, 1,
+            lpp_energy_from_bytes, lpp_energy_to_bytes),
     LppType(132, 'Direction', 2, 1,
             lpp_direction_from_bytes, lpp_direction_to_bytes),
     LppType(133, 'Unix Timestamp', 4, 1,
@@ -746,6 +861,8 @@ LPP_TYPES = [
             lpp_gyro_from_bytes, lpp_gyro_to_bytes),
     LppType(136, 'GPS Location', 9, 3,
             lpp_gps_from_bytes, lpp_gps_to_bytes),
+    LppType(142, 'Switch', 1, 1,
+            lpp_switch_from_bytes, lpp_switch_to_bytes),            
     LppType(246, 'Rate', 2, 1,
             lpp_rate_from_bytes, lpp_rate_to_bytes)            
 ]
